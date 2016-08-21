@@ -1,6 +1,6 @@
 #coding:utf-8
 import os
-import sae.const
+from sae.const import MYSQL_USER,MYSQL_PASS,MYSQL_HOST,MYSQL_PORT,MYSQL_DB
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 
@@ -46,8 +46,8 @@ class ProductionConfig(Config):
 
 class SAECloudConfig(Config):
     SQLALCHEMY_DATABASE_URI = 'mysql://%s:%s@%s:%s/%s' \
-                          % ('x5jwjmx5jw', 'mz0zxyxhj5ki04ji45j1yl3z3my5h0yzywzz52h3',
-                             'w.rdc.sae.sina.com.cn', 3307, 'app_ibymax')
+                          % (MYSQL_USER, MYSQL_PASS,
+                             MYSQL_HOST, int(MYSQL_PORT), MYSQL_DB)
                           
 
 config = {
