@@ -1,3 +1,4 @@
+#coding:utf-8
 import os
 import sae.const
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -18,7 +19,8 @@ class Config:
     FLASKY_POSTS_PER_PAGE = 20
     FLASKY_FOLLOWERS_PER_PAGE = 50
     FLASKY_COMMENTS_PER_PAGE = 30
-
+    #连接池间隔时间
+    SQLALCHEMY_POOL_RECYCLE = 10
     @staticmethod
     def init_app(app):
         pass
@@ -41,8 +43,10 @@ class ProductionConfig(Config):
         'mysql://root@localhost:3306/app_ibymax'
 
 class SAECloudConfig(Config):
-    SQLALCHEMY_DATABASE_URI = 'mysql://x5jwjmx5jw:mz0zxyxhj5ki04ji45j1yl3z3my5h0yzywzz52h3@w.rdc.sae.sina.com.cn:3307/app_ibymax' or \
-        'mysql://'+ sae.const.MYSQL_USER +':' +sae.const.MYSQL_PASS +'@'+sae.const.MYSQL_HOST+':'+str(sae.const.MYSQL_PORT) +'/'+sae.const.MYSQL_DB
+    SQLALCHEMY_DATABASE_URI = 'mysql://%s:%s@%s:%s/%s' \
+                          % (sae.const.MYSQL_USER, sae.const.MYSQL_PASS,
+                             sae.const.MYSQL_HOST, int(sae.const.MYSQL_PORT), sae.const.MYSQL_DB)
+                          
 
 config = {
     'development': DevelopmentConfig,

@@ -18,6 +18,7 @@ def index():
                     author=current_user._get_current_object())
         db.session.add(post)
         db.session.commit()
+        db.session.close()
         return redirect(url_for('.index'))
     page = request.args.get('page', 1, type=int)
     show_followed = False
@@ -57,6 +58,7 @@ def edit_profile():
         current_user.about_me = form.about_me.data
         db.session.add(current_user)
         db.session.commit()
+        db.session.close()
         flash('Your profile has been updated.')
         return redirect(url_for('.user', username=current_user.username))
     form.name.data = current_user.name
@@ -81,6 +83,7 @@ def edit_profile_admin(id):
         user.about_me = form.about_me.data
         db.session.add(user)
         db.session.commit()
+        db.session.close()
         flash('The profile has been updated.')
         return redirect(url_for('.user', username=user.username))
     form.email.data = user.email
@@ -103,6 +106,7 @@ def post(id):
                           author=current_user._get_current_object())
         db.session.add(comment)
         db.session.commit()
+        db.session.close()
         flash('Your comment has been published.')
         return redirect(url_for('.post', id=post.id, page=-1))
     page = request.args.get('page', 1, type=int)
@@ -129,6 +133,7 @@ def edit(id):
         post.body = form.body.data
         db.session.add(post)
         db.session.commit()
+        db.session.close()
         flash('The post has been updated.')
         return redirect(url_for('.post', id=post.id))
     form.body.data = post.body
@@ -238,6 +243,7 @@ def moderate_enable(id):
     comment.disabled = False
     db.session.add(comment)
     db.session.commit()
+    db.session.close()
     return redirect(url_for('.moderate',
                             page=request.args.get('page', 1, type=int)))
 
@@ -250,5 +256,6 @@ def moderate_disable(id):
     comment.disabled = True
     db.session.add(comment)
     db.session.commit()
+    db.session.close()
     return redirect(url_for('.moderate',
                             page=request.args.get('page', 1, type=int)))

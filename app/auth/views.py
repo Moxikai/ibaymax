@@ -55,6 +55,7 @@ def register():
                     password=form.password.data)
         db.session.add(user)
         db.session.commit()
+        db.session.close()
         token = user.generate_confirmation_token()
         send_email(user.email, 'Confirm Your Account',
                    'auth/email/confirm', user=user, token=token)
@@ -94,6 +95,7 @@ def change_password():
             current_user.password = form.password.data
             db.session.add(current_user)
             db.session.commit()
+            db.session.close()
             flash('Your password has been updated.')
             return redirect(url_for('main.index'))
         else:
