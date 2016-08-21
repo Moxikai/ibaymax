@@ -5,7 +5,7 @@ from app.models import User, Follow, Role, Permission, Post, Comment
 from flask_script import Manager, Shell
 from flask_migrate import Migrate, MigrateCommand
 
-app = create_app(os.getenv('FLASK_CONFIG') or 'production')
+app = create_app(os.getenv('FLASK_CONFIG') or 'sae')
 manager = Manager(app)
 migrate = Migrate(app, db)
 
