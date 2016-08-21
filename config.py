@@ -41,7 +41,7 @@ class ProductionConfig(Config):
         'mysql://root@localhost:3306/app_ibymax'
 
 class SAECloudConfig(Config):
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
+    SQLALCHEMY_DATABASE_URI = 'mysql://x5jwjmx5jw:mz0zxyxhj5ki04ji45j1yl3z3my5h0yzywzz52h3@w.rdc.sae.sina.com.cn:3307/app_ibymax' or \
         'mysql://'+ sae.const.MYSQL_USER +':' +sae.const.MYSQL_PASS +'@'+sae.const.MYSQL_HOST+':'+str(sae.const.MYSQL_PORT) +'/'+sae.const.MYSQL_DB
 
 config = {
