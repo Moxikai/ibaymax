@@ -24,7 +24,7 @@ Jinja2==2.7.1
 Mako==0.9.1
 Markdown==2.3.1
 MarkupSafe==0.18
-MySQL-python==1.2.5
+MySQL-python==1.2.3
 prettytable==0.7.2
 Pygments==1.6
 PyYAML==3.11
