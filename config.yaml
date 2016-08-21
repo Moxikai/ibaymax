@@ -1,2 +1,7 @@
 name: ibymax
 version: 1
+handlers:
+- url: /favicon.ico
+  static_path: app/static/favicon.ico
+- url: /static/
+  static_path: app/static
