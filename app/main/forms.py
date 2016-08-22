@@ -52,8 +52,8 @@ class EditProfileAdminForm(Form):
 
 
 class PostForm(Form):
-    body = TextAreaField("写一篇博客?", validators=[Required()])
-    submit = SubmitField('提交')
+    body = TextAreaField("write one blog", validators=[Required()])
+    submit = SubmitField('submit')
 
 
 class CommentForm(Form):

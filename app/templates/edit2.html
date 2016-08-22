@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block styles %}
+
+    <link href="{{ url_for('static',filename="bootstrap_markdown_2_10/css/bootstrap-markdown.min.css") }} " rel="stylesheet">
+    {{ super() }}
+{% endblock styles %}
+
+{% block content %}
+    {{ super() }}
+    <form>
+    <input name="title" type="text" placeholder="Title?" />
+    <textarea name="content" data-provide="markdown" rows="15"></textarea>
+    <label class="checkbox">
+      <input name="publish" type="checkbox"> Publish
+    </label>
+    <hr/>
+    <button type="submit" class="btn">Submit</button>
+  </form>
+{% endblock content %}
+
+{% block scripts %}
+    {{ super() }}
+    <script src="{{ url_for('static',filename="bootstrap_markdown_2_10/js/bootstrap-markdown.js") }}"></script>
+
+
+{% endblock scripts %}
