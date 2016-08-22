@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {{ super() }}
+<body>
+    <div id="main" class="container" style="margin-top: 20px;">
+        <div class="row">
+            <div class="col-md-6">
+                <form role="form">
+                    <div class="form-group">
+                        <label for="Content">Email address</label>
+                        <textarea id="markdown-editor" class="form-control" rows="12"></textarea>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</body>
+{% endblock content %}
+{% block scripts %}
+    {{ super() }}
+    <script src="{{ url_for('static',filename="markdown/markdown.js") }}"></script>
+    <script src="{{ url_for('static',filename="markdown/markdown-editor-N.js") }}"></script>
+    <script>
+        $(function() {
+            $('#markdown-editor').markdown();
+        });
+    </script>
+{% endblock scripts %}
+

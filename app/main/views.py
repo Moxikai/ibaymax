@@ -125,9 +125,9 @@ def post(id):
                            comments=comments, pagination=pagination)
 
 
-@main.route('/edit/<int:id>', methods=['GET', 'POST'])
+@main.route('/modify/<int:id>', methods=['GET', 'POST'])
 @login_required
-def edit(id):
+def modify(id):
     post = Post.query.get_or_404(id)
     if current_user != post.author and \
             not current_user.can(Permission.ADMINISTER):
@@ -142,6 +142,18 @@ def edit(id):
         return redirect(url_for('.post', id=post.id))
     form.body.data = post.body
     return render_template('edit_post.html', form=form)
+
+@main.route('/edit', methods=['GET', 'POST'])
+@login_required
+def edit():
+    form = PostForm()
+    if form.validate_on_submit():
+        post = Post(body=form.body.data)
+        db.session.add(post)
+        db.session.commit()
+        flash('The post has been updated.')
+        return redirect(url_for('main.post',id=post.id))
+    return render_template('edit.html',form=form)
 
 
 @main.route('/follow/<username>')
