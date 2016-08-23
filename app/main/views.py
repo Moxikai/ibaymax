@@ -1,5 +1,6 @@
+#coding:utf-8
 from flask import render_template, redirect, url_for, abort, flash, request,\
-    current_app, make_response,g
+    current_app, make_response,g,send_from_directory,jsonify
 from flask_login import login_required, current_user
 from . import main
 from .forms import EditProfileForm, EditProfileAdminForm, PostForm,\
@@ -7,7 +8,8 @@ from .forms import EditProfileForm, EditProfileAdminForm, PostForm,\
 from .. import db
 from ..models import Permission, Role, User, Post, Comment
 from ..decorators import admin_required, permission_required
-
+from werkzeug.utils import secure_filename
+import os
 @main.teardown_request
 def teardown_request(func):
     db.session.close()
@@ -62,7 +64,6 @@ def edit_profile():
         current_user.about_me = form.about_me.data
         db.session.add(current_user)
         db.session.commit()
-        db.session.close()
         flash('Your profile has been updated.')
         return redirect(url_for('.user', username=current_user.username))
     form.name.data = current_user.name
@@ -87,7 +88,7 @@ def edit_profile_admin(id):
         user.about_me = form.about_me.data
         db.session.add(user)
         db.session.commit()
-        db.session.close()
+
         flash('The profile has been updated.')
         return redirect(url_for('.user', username=user.username))
     form.email.data = user.email
@@ -110,7 +111,6 @@ def post(id):
                           author=current_user._get_current_object())
         db.session.add(comment)
         db.session.commit()
-        db.session.close()
         flash('Your comment has been published.')
         return redirect(url_for('.post', id=post.id, page=-1))
     page = request.args.get('page', 1, type=int)
@@ -137,24 +137,35 @@ def modify(id):
         post.body = form.body.data
         db.session.add(post)
         db.session.commit()
-        db.session.close()
         flash('The post has been updated.')
         return redirect(url_for('.post', id=post.id))
     form.body.data = post.body
-    return render_template('edit_post.html', form=form)
+    return render_template('edit.html', form=form)
 
 @main.route('/edit', methods=['GET', 'POST'])
 @login_required
 def edit():
     form = PostForm()
     if form.validate_on_submit():
-        post = Post(body=form.body.data)
+        post = Post(body=form.body.data,
+                    author_id=current_user.id)
         db.session.add(post)
         db.session.commit()
         flash('The post has been updated.')
         return redirect(url_for('main.post',id=post.id))
     return render_template('edit.html',form=form)
 
+
+@main.route('/delete/<int:id>')
+def delete(id):
+    post = Post.query.get_or_404(id)
+    if current_user != post.author and \
+            not current_user.can(Permission.ADMINISTER):
+        abort(403)
+    db.session.delete(post)
+    db.session.commit()
+    flash('finish deleting blog ')
+    return redirect(url_for('main.index'))
 
 @main.route('/follow/<username>')
 @login_required
@@ -259,7 +270,7 @@ def moderate_enable(id):
     comment.disabled = False
     db.session.add(comment)
     db.session.commit()
-    db.session.close()
+
     return redirect(url_for('.moderate',
                             page=request.args.get('page', 1, type=int)))
 
@@ -272,6 +283,21 @@ def moderate_disable(id):
     comment.disabled = True
     db.session.add(comment)
     db.session.commit()
-    db.session.close()
     return redirect(url_for('.moderate',
                             page=request.args.get('page', 1, type=int)))
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in current_app.config['IMG_ALLOWED_EXTENSIONS']
+
+@main.route('/uploads/img',methods=['POST'])
+def upload_img():
+    img = request.files['file']
+    if img and allowed_file(img.filename):
+        filename = secure_filename(img.filename)
+        img.save(os.path.join(current_app.config['IMG_UPLOAD_FOLDER'],filename))
+        #data = {'url':url_for('static',filename='/uploads/img/%s'%(filename),_external=True)}
+        return jsonify({'url':url_for('static',filename='uploads/img/%s'%(filename),_external=True)})
+        #返回图片
+        #return send_from_directory(current_app.config['IMG_UPLOAD_FOLDER'],filename)
+

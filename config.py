@@ -23,6 +23,8 @@ class Config:
     SQLALCHEMY_POOL_RECYCLE = 10
     SQLALCHEMY_ECHO = True
     #SQLALCHEMY_RECORD_QUERIES = True
+    IMG_UPLOAD_FOLDER = os.path.join(basedir,'app/static/uploads/img')
+    IMG_ALLOWED_EXTENSIONS = set(['png','jpg','jpeg','gif','ico'])
     @staticmethod
     def init_app(app):
         pass
@@ -58,3 +60,6 @@ config = {
     'default': DevelopmentConfig,
     'sae':SAECloudConfig
 }
+
+if __name__ == '__main__':
+    print basedir

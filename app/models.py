@@ -8,7 +8,9 @@ from flask import current_app, request, url_for
 from flask_login import UserMixin, AnonymousUserMixin
 from app.exceptions import ValidationError
 from . import db, login_manager
-
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 class Permission:
     FOLLOW = 0x01
@@ -315,10 +317,13 @@ class Post(db.Model):
     def on_changed_body(target, value, oldvalue, initiator):
         allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code',
                         'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul',
-                        'h1', 'h2', 'h3', 'p']
-        target.body_html = bleach.linkify(bleach.clean(
-            markdown(value, output_format='html'),
-            tags=allowed_tags, strip=True))
+                        'h1', 'h2', 'h3', 'p','img','video']
+
+
+       # target.body_html = bleach.linkify(bleach.clean(
+          #  markdown(value.encode('utf-8'), output_format='html')))
+
+        target.body_html = markdown(value.encode('utf-8'))
 
     def to_json(self):
         json_post = {
@@ -358,10 +363,10 @@ class Comment(db.Model):
     @staticmethod
     def on_changed_body(target, value, oldvalue, initiator):
         allowed_tags = ['a', 'abbr', 'acronym', 'b', 'code', 'em', 'i',
-                        'strong']
+                        'strong','img','video']
         target.body_html = bleach.linkify(bleach.clean(
-            markdown(value, output_format='html'),
-            tags=allowed_tags, strip=True))
+            markdown(value.encode('utf-8'), output_format='html')))
+        target.body_html = markdown(value.encode('utf-8'))
 
     def to_json(self):
         json_comment = {
@@ -384,3 +389,6 @@ class Comment(db.Model):
 
 
 db.event.listen(Comment.body, 'set', Comment.on_changed_body)
+
+if __name__ == '__main__':
+    pass

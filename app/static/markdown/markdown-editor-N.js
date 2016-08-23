@@ -115,6 +115,7 @@ function markdown2html(text) {
                 'resize': 'none',
                 'font-family': 'Monaco, Menlo, Consolas, "Courier New", monospace',
             };
+            //复制当前对象
             $that = this;
             $.map(css, function (v, k) { //遍历/each http://www.w3school.com.cn/jquery/traversing_map.asp
                 $that.$textarea.css(k, v);
@@ -362,6 +363,7 @@ function markdown2html(text) {
         image: function (delegate) {
             var getObjectURL = function (file) {
                 var url = '';
+                //以下为获取指向文件对象的URL
                 if (window.createObjectURL != undefined) // basic
                     url = window.createObjectURL(file);
                 else if (window.URL != undefined) // mozilla(firefox)
@@ -413,10 +415,13 @@ function markdown2html(text) {
                     '		</div>' +
                     '	</div>' +
                     '</div>';
+            //查找body元素,在body元素内部开始的地方插入s
             $('body').prepend(s);
+            //选择器,查找body的子元素,返回第一个
             var $modal = $('body').children(':first');
             var $form = $modal.find('form');
             var $text = $modal.find('input[name="text"]');
+            //查找name='file'的input标签,返回jquery对象
             var $file = $modal.find('input[name="file"]');
             var $prog = $modal.find('div.bar');
             var $preview = $modal.find('div.preview');
@@ -430,16 +435,19 @@ function markdown2html(text) {
                 // clear error:
                 $alert.text('').removeClass('alert-danger show').addClass('hidden');
                 //$alert.text('');
-
+                //获取file输入的值
                 var f = $file.val();
                 if (!f) {
                     $preview.css('background-image', '');
                     return;
                 }
+                //get()方法把jquery对象转化为DOM元素列表,0为索引值
                 var lf = $file.get(0).files[0];
                 var ft = lf.type;
                 console.log('ft:' + ft);
                 if (ft == 'image/png' || ft == 'image/jpeg' || ft == 'image/gif') {
+                    //设置css
+                    //getObjectURL返回URL链接
                     $preview.css('background-image', 'url(' + getObjectURL(lf) + ')');
                     if ($text.val() == '') {
                         // extract filename without ext:
@@ -460,7 +468,7 @@ function markdown2html(text) {
                     console.log('Not a valid web image.');
                 }
             });
-            
+            //选择取消
             var cancel = function () {
                 if ($status.uploading) {
                     if (!confirm('File is uploading, are you sure you want to cancel it?')) {
@@ -493,12 +501,15 @@ function markdown2html(text) {
                     var lf = $file.get(0).files[0];
                     // send XMLHttpRequest2:
                     var fd = null;
+                    //获取form元素
                     var form = $form.get(0);
+                    //生成post提交的数据,以下方法二选一
                     try {
                         fd = form.getFormData();
                     } catch (e) {
                         fd = new FormData(form);
                     }
+
                     var xhr = new XMLHttpRequest();
                     xhr.upload.addEventListener('progress', function (evt) {
                         if (evt.lengthComputable) {
@@ -699,8 +710,8 @@ function markdown2html(text) {
             'preview': 'glyphicon glyphicon-eye-open',
             'fullscreen': 'glyphicon glyphicon-fullscreen glyphicon-white',
         },
-        upload_image_url: '',
-        upload_file_url: '',
+        upload_image_url: '../uploads/img',
+        upload_file_url: '../uploads/file',
     };
 
     $.fn.markdown.Constructor = Markdown;
