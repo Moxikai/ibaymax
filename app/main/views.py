@@ -301,3 +301,15 @@ def upload_img():
         #返回图片
         #return send_from_directory(current_app.config['IMG_UPLOAD_FOLDER'],filename)
 
+#上传文件
+@main.route('/uploads/file',methods=['GET','POST'])
+def upload_file():
+    if request.method != 'GET':
+        file = request.files['file_data']
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(current_app.config['IMGS_UPLOAD_FOLDER'],filename))
+            url = url_for('static',filename="uploads/img/%s"%(filename))
+            return jsonify({'initialPreview':['<img src=%s class=%s alt=%s title=%s>'%(url,'file-preview-image',filename,filename)]})
+    else:
+        return render_template('file_upload.html')

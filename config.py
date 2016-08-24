@@ -25,6 +25,7 @@ class Config:
     #SQLALCHEMY_RECORD_QUERIES = True
     IMG_UPLOAD_FOLDER = os.path.join(basedir,'app/static/uploads/img')
     IMG_ALLOWED_EXTENSIONS = set(['png','jpg','jpeg','gif','ico'])
+    IMGS_UPLOAD_FOLDER = os.path.join(basedir,'app/static/uploads/img')
     @staticmethod
     def init_app(app):
         pass
